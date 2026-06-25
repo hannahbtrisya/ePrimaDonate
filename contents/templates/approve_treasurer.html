@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Treasurer Actions</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .action-box {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      background-color: #fff8f0;
+    }
+
+    .action-box p {
+      margin: 5px 0;
+    }
+
+    form {
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin-right: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+    <ul>
+    <li><a href="{% url 'chairman_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'chairman_donor_list' %}">View Donor List</a></li>
+    <li><a href="{% url 'approve_treasurer' %}">Approve Treasurer Actions</a></li>
+    <li><a href="{% url 'financial_reports' %}">Monthly Report</a></li>
+    <li><a href="{% url 'activity_logs' %}">View Activity Logs</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+
+
+  <div class="container">
+  <h2>Pending Treasurer Actions</h2>
+
+  {% for action in pending_actions %}
+    <div class="action-box">
+      <p><strong>Action Type:</strong> {{ action.get_action_display }}</p>
+      <p><strong>Treasurer:</strong> {{ action.treasurer.user.username }}</p>
+      <p><strong>Before:</strong> {{ action.data_before|default:"-" }}</p>
+      <p><strong>After:</strong> {{ action.data_after }}</p>
+
+      <form method="post" action="{% url 'process_request_action' action.id 'approve' %}">
+  {% csrf_token %}
+  <button type="submit">Approve</button>
+</form>
+
+<form method="post" action="{% url 'process_request_action' action.id 'reject' %}" onsubmit="return confirmReject();">
+
+  {% csrf_token %}
+  <button type="submit">Reject</button>
+</form>
+
+    </div>
+  {% empty %}
+    <p style="text-align:center;">No actions pending approval.</p>
+  {% endfor %}
+</div>
+<footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+<script>
+  function confirmReject() {
+    return confirm("Are you sure you want to reject this request?");
+  }
+</script>
+
+</body>
+</html>

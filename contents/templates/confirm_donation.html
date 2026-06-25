@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <title>Confirm Donation</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #d35400;
+      margin-bottom: 25px;
+      font-size: 2.2em;
+    }
+
+    .summary {
+      text-align: left;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+      color: #555;
+    }
+
+    .summary p {
+      margin: 12px 0;
+    }
+
+    button {
+      background-color: #ff9f43;
+      color: white;
+      padding: 12px 40px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e67e22;
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+  <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+  <span>ePrimaDonate</span>
+</div>
+  <ul id="nav-links">
+    <li><a href="{% url 'index' %}">Home</a></li>
+    <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a><li>
+    <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+
+    {% if user.is_authenticated %}
+      <li><a href="donation_history">Donation History</a></li> 
+      <li><a href="edit_profile">My Profile / Account Settings</a></li> 
+
+    <li><a href="about">About Us</a></li> 
+  </ul>
+</nav>
+
+  <div class="container">
+    <h1>Confirm Your Donation</h1>
+
+    <div class="summary">
+      <p><strong>Donor:</strong> {{ donation.donor.donorName }}</p>
+      <p><strong>Type:</strong> {{ donation.donation_type }}</p>
+      <p><strong>Amount:</strong> RM {{ donation.amount }}</p>
+      <p><strong>Payment Method:</strong> {{ donation.payment_method }}</p>
+
+      {% if donation.payment_method == 'Credit/Debit Card' and donation.card_number %}
+        <p><strong>Card Number:</strong> **** **** **** {{ donation.card_number|slice:"-4:" }}</p>
+      {% endif %}
+
+      {% if donation.payment_method == 'QR Code' and donation.qr_receipt %}
+        <p><strong>QR Receipt:</strong><br>
+          <img src="{{ donation.qr_receipt.url }}" alt="QR Receipt" width="200">
+        </p>
+      {% endif %}
+    </div>
+
+    <form action="{% url 'donation_receipt' donation.id %}" method="get">
+      <button type="submit">Confirm & Finish</button>
+    </form>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+</body>
+</html>

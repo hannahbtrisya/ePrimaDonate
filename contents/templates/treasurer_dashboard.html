@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+     nav {
+  background-color: #ff9f43;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #fff;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 50px;
+  width: auto;
+}
+
+#menu-toggle {
+  display: none;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 1.8em;
+  color: white;
+  cursor: pointer;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  nav ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #ff9f43;
+    margin-top: 10px;
+    padding: 10px 0;
+  }
+
+  #menu-toggle:checked + .menu-icon + ul {
+    display: flex;
+  }
+
+  nav ul li {
+    text-align: center;
+    padding: 10px 0;
+  }
+}
+
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    .dashboard-title {
+      text-align: center;
+      font-size: 2.2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .welcome-msg {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-options {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .dashboard-options a {
+      background-color: #ffe0b2;
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #d35400;
+      font-weight: bold;
+      width: 80%;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-options a:hover {
+      background-color: #ffd699;
+    }
+
+    .logout-link {
+      display: block;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .logout-link a {
+      background-color: #c0392b;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .logout-link a:hover {
+      background-color: #a93226;
+    }
+
+    footer {
+      background-color: #ff9f43;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+    {% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+  <input type="checkbox" id="menu-toggle">
+  <label for="menu-toggle" class="menu-icon">&#9776;</label>
+  <ul id="nav-links">
+  <ul>
+    <li><a href="{% url 'treasurer_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'donation_type_list_treasurer' %}">Manage Donation Types</a></li>
+    <li><a href="{% url 'manage_transactions' %}">Manage Transactions</a></li>
+    <li><a href="{% url 'annual_report' %}">Reports</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+    <h1 class="dashboard-title">Treasurer Dashboard</h1>
+    <p class="welcome-msg">Welcome, {{ request.user.username }}!</p>
+
+    <div class="dashboard-options">
+      <a href="{% url 'financial_reports' %}">View Financial Reports</a>
+      <a href="{% url 'manage_transactions' %}">Manage Transactions</a>
+      <a href="{% url 'donation_type_list_treasurer' %}">Manage Donation Types</a>
+    </div>
+    <!-- Monthly Analytics Section -->
+<h2 style="text-align: center; margin-top: 50px; color: #e67e22;">Monthly Donation Analytics</h2>
+
+<!-- Chart Container -->
+<canvas id="monthlyChart" style="max-width: 100%; margin: 40px auto;"></canvas>
+
+<!-- Table for Category-wise Monthly Totals -->
+<div style="overflow-x: auto; margin-top: 40px;">
+  <table style="width: 100%; border-collapse: collapse; background: #fff3e0;">
+    <thead style="background-color: #ffb74d; color: white;">
+      <tr>
+        <th style="padding: 12px;">Month</th>
+        {% for category in donation_categories %}
+          <th style="padding: 12px;">{{ category }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for month, data in monthly_category_totals.items %}
+        <tr>
+          <td style="padding: 10px; border: 1px solid #eee;">{{ month }}</td>
+          {% for category in donation_categories %}
+            <td style="padding: 10px; border: 1px solid #eee;">RM {{ data|get_item:category|default:"0.00" }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+    <div class="logout-link">
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('monthlyChart').getContext('2d');
+  const monthlyChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ monthly_totals.keys|safe }},
+      datasets: [{
+        label: 'Total Collection (RM)',
+        data: {{ monthly_totals.values|safe }},
+        backgroundColor: '#ff9f43',
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Monthly Total Collection (All Categories)',
+          font: { size: 18 }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { callback: value => 'RM ' + value }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

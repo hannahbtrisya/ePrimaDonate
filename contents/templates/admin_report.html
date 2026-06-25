@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Donor Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a,
+    nav ul li form button {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    nav ul li a:hover,
+    nav ul li form button:hover {
+      text-decoration: underline;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #d35400;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+
+    button[type="submit"] {
+      margin-top: 25px;
+      background-color: #e67e22;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #cf711f;
+    }
+    
+    .input-lock-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-lock-wrapper input[readonly] {
+    padding-right: 35px; /* bagi ruang untuk icon */
+    background-color: #f0f0f0;
+    color: #777;
+    cursor: not-allowed;
+  }
+
+  .lock-icon {
+    position: absolute;
+    right: 10px;
+    color: #999;
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+    .messages p {
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<h2>Weekly Report</h2>
+<p>Total: RM{{ weekly_total }}</p>
+<ul>
+    {% for d in weekly_donations %}
+        <li>{{ d.donor.donorName }} - {{ d.amount }} - {{ d.date }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Monthly Report</h2>
+<p>Total: RM{{ monthly_total }}</p>
+<ul>
+    {% for d in monthly_donations %}
+        <li>{{ d.donor.donorName }} - {{ d.amount }} - {{ d.date }}</li>
+    {% endfor %}
+</ul>
+</body>

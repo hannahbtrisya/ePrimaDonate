@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type of Donation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .donation-types {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .type-card {
+      background-color: #fff;
+      border: 1px solid #ffe0b2;
+      padding: 20px;
+      width: 280px;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .type-card .icon {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .type-card h3 {
+      color: #d35400;
+      margin-bottom: 10px;
+    }
+
+    .type-card p {
+      color: #555;
+    }
+
+    .type-card.dana-operasi-masjid-prima-saujana-kajang {
+      border-left: 6px solid #f39c12;
+    }
+
+    .type-card.tabung-pembangunan-masjid {
+      border-left: 6px solid #27ae60;
+    }
+
+    .type-card.infaq-pendidikan-kelas-agama {
+      border-left: 6px solid #2980b9;
+    }
+
+    .type-card.sumbangan-makanan-asnaf {
+      border-left: 6px solid #c0392b;
+    }
+
+    @media screen and (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+{% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+  <ul id="nav-links">
+    <li><a href="{% url 'donor_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'index' %}">Home</a></li>
+    <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a></li>
+    <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+    <li><a href="{% url 'donation_history' %}">Donation History</a></li>
+    <li><a href="{% url 'about' %}">About Us</a></li>
+    <li><a href="{% url 'edit_profile' %}">My Profile</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+    <h1>Type of Donation</h1>
+
+    <div class="donation-types">
+      {% for type in types %}
+        <div class="type-card {{ type.name|slugify }}">
+          <div class="icon">
+            {% if "operasi" in type.name|lower %}
+             
+            {% elif "pembangunan" in type.name|lower %}
+             
+            {% elif "pendidikan" in type.name|lower %}
+              
+            {% elif "makanan" in type.name|lower %}
+             
+            {% else %}
+              
+            {% endif %}
+          </div>
+          <h3>{{ type.name }}</h3>
+          <p>{{ type.description|default:"No description available." }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+<footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+</body>
+</html>

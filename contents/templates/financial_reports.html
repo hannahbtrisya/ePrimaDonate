@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Reports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-img {
+  max-height: 60px;
+  width: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2.dashboard-title {
+      text-align: center;
+      color: #e67e22;
+      font-size: 2.3em;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section h3 {
+      font-size: 1.5em;
+      color: #d35400;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #f0c287;
+      padding-bottom: 5px;
+    }
+
+    .section ul {
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    .section li {
+      font-size: 1.05em;
+      margin-bottom: 8px;
+    }
+
+    .top-donor {
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #16a085;
+    }
+
+    .download-section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .download-btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .download-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      background-color: #ff9f43;
+      color: white;
+      padding: 20px;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+   {% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+  <ul>
+    {% if is_chairman %}
+      <li><a href="{% url 'chairman_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'chairman_donor_list' %}">View Donor List</a></li>
+      <li><a href="{% url 'approve_treasurer' %}">Approve Treasurer Actions</a></li>
+      <li><a href="{% url 'financial_reports' %}">Monthly Report</a></li>
+    {% elif is_treasurer %}
+      <li><a href="{% url 'treasurer_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'donation_type_list_treasurer' %}">Manage Donation Types</a></li>
+      <li><a href="{% url 'manage_transactions' %}">Manage Transactions</a></li>
+      <li><a href="{% url 'financial_reports' %}">Financial Reports</a></li>
+    {% endif %}
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+
+
+
+  <div class="container">
+    <h2 class="dashboard-title">Financial Reports</h2>
+
+    <div class="section">
+      <h3>Monthly Donation Summary</h3>
+      <ul>
+        {% for item in monthly_summary %}
+          <li><strong>{{ item.month|date:"F Y" }}</strong>: RM {{ item.total }}</li>
+        {% empty %}
+          <li>No donation data available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>Donation Breakdown by Type</h3>
+      <ul>
+        {% for item in type_summary %}
+          <li><strong>{{ item.donation_type__name }}</strong>: RM {{ item.total }}</li>
+        {% empty %}
+          <li>No donation type data available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="section">
+  <h3>Donations by Donor</h3>
+  <ul>
+    {% for donor in donor_totals %}
+      <li><strong>{{ donor.donor__donorName }}</strong>: RM {{ donor.total }}</li>
+    {% empty %}
+      <li>No donor data yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+    <div class="download-section">
+      <form method="GET" action="{% url 'annual_report' %}">
+        <label for="month">Select Month:</label>
+        <select name="month" id="month" required>
+          {% for item in monthly_summary %}
+            <option value="{{ item.month|date:'Y-m' }}">{{ item.month|date:"F Y" }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="download-btn">Download PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+</body>
+</html>

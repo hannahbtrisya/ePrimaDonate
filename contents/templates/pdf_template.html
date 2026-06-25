@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 5px; /* tighter gap */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .summary-card {
+            width: 48%;
+            float: left;
+            padding: 10px;
+            border: 1px solid #aaa;
+            margin: 10px 1%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+        }
+
+        ul {
+            margin: 10px 0 30px;
+            padding-left: 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            font-size: 11px;
+        }
+
+        .signature {
+            margin-top: 10px;
+        }
+
+        .signature-line {
+            margin-bottom: 4px;
+        }
+
+        .right-align {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="margin-bottom: 0;">Monthly Donation Report</h1>
+    <h2>
+  {% if selected_month_name %}
+    Report for {{ selected_month_name }} {{ year }}
+  {% else %}
+    Annual Report {{ year }}
+  {% endif %}
+</h2>
+
+
+    <div class="clearfix">
+        <div class="summary-card">
+            <h3>Total Donations</h3>
+            <p><strong>RM {{ total_donations|floatformat:2 }}</strong></p>
+        </div>
+        <div class="summary-card">
+            <h3>Top Donor</h3>
+            <p>
+                {% if top_donor %} 
+                    <strong>{{ top_donor.donor__donorName }}</strong><br>
+                    (RM {{ top_donor.total|floatformat:2 }})
+                {% else %}
+                    None
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <h3>Monthly Donation Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Total Amount (RM)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for month, amount in monthly_donations.items %}
+            <tr>
+                <td>{{ month }}</td>
+                <td>RM {{ amount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Donation Types Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Total Amount (RM)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in donation_type_summary %}
+            <tr>
+                <td>{{ item.donation_type__name }}</td>
+                <td>RM {{ item.total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Donors Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Donor</th>
+                <th>Total Donated (RM)</th>
+                <th>Contribution (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donor in all_donors %}
+            <tr>
+                <td>{{ donor.name }}</td>
+                <td>RM {{ donor.total|floatformat:2 }}</td>
+                <td>{{ donor.percentage|floatformat:2 }} %</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Achievements This Year</h3>
+    <ul>
+        <li>Successfully collected over RM {{ total_donations|floatformat:0 }}</li>
+        <li>Engaged {{ all_donors|length }} unique donors</li>
+        <li>Highest single donation: RM {{ max_donation.amount|floatformat:2 }}</li>
+    </ul>
+<table style="margin-top: 60px; width: 100%;">
+  <tr>
+    <td style="border: none;">
+      <strong>Prepared by:</strong><br><br>
+      ______________________________<br>
+      Treasurer, Masjid Prima Saujana Kajang
+    </td>
+  </tr>
+</table>
+
+
+</body>
+</html>

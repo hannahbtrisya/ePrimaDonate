@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us - Digital Donation System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .about-hero {
+      background: linear-gradient(to right, #ffe0b2, #ffcc80);
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .about-hero h1 {
+      font-size: 3em;
+      color: #d35400;
+      margin-bottom: 10px;
+    }
+
+    .about-hero p {
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    .about-section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    .about-section h2 {
+      font-size: 1.8em;
+      color: #e67e22;
+      margin-bottom: 15px;
+    }
+
+    .about-section p {
+      font-size: 1.1em;
+      line-height: 1.8em;
+      margin-bottom: 30px;
+      color: #444;
+    }
+
+    .highlight-box {
+      background-color: #fff3e0;
+      border-left: 5px solid #ff9f43;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 40px;
+    }
+
+    footer {
+      background-color: #ff9f43;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+{% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+  <ul id="nav-links">
+    <li><a href="{% url 'donor_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'index' %}">Home</a></li>
+    <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a></li>
+    <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+    <li><a href="{% url 'donation_history' %}">Donation History</a></li>
+    <li><a href="{% url 'about' %}">About Us</a></li>
+    <li><a href="{% url 'edit_profile' %}">My Profile</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+
+  <section class="about-hero" data-aos="fade-up">
+    <h1>About Us</h1>
+    <p>Empowering Community through Transparent and Digital Giving</p>
+  </section>
+
+  <section class="about-section">
+    <div class="highlight-box" data-aos="fade-right">
+      <h2>About Masjid Prima Saujana Kajang</h2>
+      <p>Masjid Prima Saujana Kajang is a beacon for the Kajang community — offering spiritual guidance, education, and charity programs. With strong roots in Islamic values, our mosque is committed to uplift the lives of all, especially the underprivileged.</p>
+    </div>
+
+    <div class="highlight-box" data-aos="fade-left">
+      <h2>Why Digital Donation?</h2>
+      <p>In a digital age, contributing to charity must be just as easy. Our system lets you donate securely, track history, and support specific campaigns. It's efficient, transparent, and always open — just like the spirit of giving.</p>
+    </div>
+
+    <div class="highlight-box" data-aos="fade-up">
+      <h2>Our Mission</h2>
+      <p>💡 Foster a caring, connected community  
+         📊 Ensure sustainable funding for mosque operations  
+         🤝 Empower youth, education, and outreach  
+         📋 Provide accountability through digital records</p>
+    </div>
+  </section>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
+</body>
+</html>

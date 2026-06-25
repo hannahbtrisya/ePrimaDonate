@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Make a Donation</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container for form */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #d35400;
+      margin-bottom: 25px;
+      font-size: 2.2em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #e67e22;
+    }
+
+    select, input[type="number"], input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border: 2px solid #ffb74d;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    select:focus, input[type="number"]:focus, input[type="text"]:focus, input[type="file"]:focus {
+      outline: none;
+      border-color: #d35400;
+      background-color: #fff3e0;
+    }
+
+    button {
+      width: 100%;
+      background-color: #ff9f43;
+      color: white;
+      padding: 12px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e67e22;
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+  <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+  <span>ePrimaDonate</span>
+</div>
+    <ul id="nav-links">
+      <li><a href="{% url 'index' %}">Home</a></li>
+      <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a><li>
+      <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+      {% if request.session.donor_id %}
+        <li><a href="{% url 'donation_history' %}">Donation History</a></li>
+        <li><a href="{% url 'donor_dashboard' %}">My Profile / Account Settings</a></li>
+      {% else %}
+        <li><a href="{% url 'login_register' %}">Login / Register</a></li>
+      {% endif %}
+      <li><a href="{% url 'about' %}">About Us</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Make a Donation</h1>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="donation_type">Donation Type:</label>
+<select name="donation_type" id="donation_type" required>
+  <option value="">-- Select Donation Type --</option>
+  {% for category in donation_types %}
+    <option value="{{ category.id }}">{{ category.name }}</option>
+  {% endfor %}
+</select>
+
+
+      <label for="amount">Amount (RM):</label>
+      <input type="number" name="amount" id="amount" step="0.01" min="1" required>
+
+      <label for="payment_method">Payment Method:</label>
+      <select name="payment_method" id="payment_method" required onchange="togglePaymentFields()">
+        <option value="">-- Select Payment Method --</option>
+        {% for code, label in payment_methods %}
+          <option value="{{ code }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+
+      <div id="card_number_div" style="display:none;">
+        <label for="card_number">Credit/Debit Card Number:</label>
+        <input type="text" name="card_number" id="card_number" maxlength="20" pattern="\d{13,20}" placeholder="Enter card number">
+      </div>
+
+      <div id="qr_receipt_div" style="display:none;">
+        <label for="qr_receipt">Scan this QR Code to make payment:</label><br>
+  <img src="{% static 'qr_example.png' %}" alt="QR Code to Scan" style="width: 200px; margin-bottom: 15px;">
+        <label for="qr_receipt">Upload QR Code Receipt:</label>
+        <input type="file" name="qr_receipt" id="qr_receipt" accept="image/*">
+      </div>
+
+      <button type="submit">Submit Donation</button>
+    </form>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+  <script>
+    function togglePaymentFields() {
+      const paymentMethod = document.getElementById('payment_method').value;
+      document.getElementById('card_number_div').style.display = (paymentMethod === 'Credit/Debit Card') ? 'block' : 'none';
+      document.getElementById('qr_receipt_div').style.display = (paymentMethod === 'QR Code') ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>

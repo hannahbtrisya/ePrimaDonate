@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login & Register</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff3e0;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #e67e22;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    form {
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #ff9f43;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #e67e22;
+    }
+
+    hr {
+      margin: 40px 0;
+      border: none;
+      height: 1px;
+      background-color: #ddd;
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  @media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  nav ul li {
+    width: 100%;
+  }
+
+  nav ul li a {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+  }
+
+  .container {
+    margin: 20px;
+    padding: 15px;
+    width: auto;
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  input, select {
+    font-size: 1em;
+    padding: 12px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 1em;
+    padding: 12px;
+  }
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+
+  </style>
+</head>
+<body>
+
+{% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+  <ul id="nav-links">
+    <li><a href="{% url 'donor_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'index' %}">Home</a></li>
+    <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a></li>
+    <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+    <li><a href="{% url 'donation_history' %}">Donation History</a></li>
+    <li><a href="{% url 'about' %}">About Us</a></li>
+    <li><a href="{% url 'edit_profile' %}">My Profile</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+    <h2 id="form-title">Login</h2>
+    {% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <p style="color: red; text-align: center; margin-bottom: 20px;">{{ message }}</p>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+    <form id="login-form" method="POST" action="{% url 'login_register' %}">
+  {% csrf_token %}
+  <input type="hidden" name="form_type" value="login" />
+
+  <label for="role">Role</label>
+  <select name="role" id="role" required>
+    <option value="donor" selected>Donor</option>
+    <option value="treasurer">Treasurer</option>
+    <option value="chairman">Chairman</option>
+  </select>
+
+  <label for="identifier" id="identifier-label">Email Address</label>
+  <input type="email" name="identifier" id="identifier" placeholder="Enter your email" required />
+
+  <label for="password" id="password-label">Password</label>
+  <input type="password" name="password" id="password" placeholder="Enter your password" required />
+  <p style="text-align:center; margin-top: 10px;">
+  <a href="{% url 'forgot_password' %}" style="color:#2980b9; text-decoration:underline;">Forgot Password?</a>
+</p>
+
+  <button type="submit">Login</button>
+</form>
+
+
+    <div class="form-switch" id="switch-to-register">
+  Don't have an account? 
+  <a href="#" id="register-link" style="color:#2980b9; text-decoration:underline;">Register here</a>.
+</div>
+
+
+    <!-- Register form hidden initially -->
+    <form id="register-form" method="POST" action="{% url 'login_register' %}" style="display:none;">
+
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="register" />
+
+      <label for="fullname">Full Name</label>
+      <input type="text" name="fullname" id="fullname" placeholder="Your full name" required />
+
+      <label for="ic">Identification Number (IC)</label>
+      <input type="text" name="ic" id="ic" placeholder="Your IC number" required />
+
+      <label for="contact">Contact Number</label>
+      <input type="text" name="contact" id="contact" placeholder="Your phone number" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" name="email" id="email" placeholder="Your email address" required />
+
+      <label for="password-register">Password</label>
+      <input type="password" name="password" id="password-register" placeholder="Enter password" required />
+
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required />
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div class="form-switch" id="switch-to-login" style="display:none;">
+  Already have an account?
+  <a href="#" id="login-link" style="color:#2980b9; text-decoration: underline;">Login</a> here.
+</div>
+
+  </div>
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+  <script>
+    const roleSelect = document.getElementById('role');
+    const identifierLabel = document.getElementById('identifier-label');
+    const identifierInput = document.getElementById('identifier');
+
+    roleSelect.addEventListener('change', () => {
+      if (roleSelect.value === 'donor') {
+        identifierLabel.textContent = 'Email Address';
+        identifierInput.type = 'email';
+        identifierInput.placeholder = 'Enter your email';
+      } else {
+        identifierLabel.textContent = 'Username';
+        identifierInput.type = 'text';
+        identifierInput.placeholder = 'Enter your username';
+      }
+    });
+
+    const switchToRegister = document.getElementById('register-link');
+    const switchToLogin = document.getElementById('switch-to-login');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const formTitle = document.getElementById('form-title');
+
+    switchToRegister.addEventListener('click', () => {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      switchToRegister.style.display = 'none';
+      switchToLogin.style.display = 'block';
+      formTitle.textContent = 'Register';
+    });
+
+    switchToLogin.addEventListener('click', () => {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      switchToRegister.style.display = 'block';
+      switchToLogin.style.display = 'none';
+      formTitle.textContent = 'Login';
+    });
+  </script>
+</body>
+</html>
+

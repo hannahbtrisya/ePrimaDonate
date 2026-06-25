@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chairman Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Gaya seragam dari homepage */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    .dashboard-title {
+      text-align: center;
+      font-size: 2.2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .welcome-msg {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-options {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .dashboard-options a {
+      background-color: #ffe0b2;
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #d35400;
+      font-weight: bold;
+      width: 80%;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-options a:hover {
+      background-color: #ffd699;
+    }
+
+    .logout-link {
+      display: block;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .logout-link a {
+      background-color: #c0392b;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .logout-link a:hover {
+      background-color: #a93226;
+    }
+
+    footer {
+      background-color: #ff9f43;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+     {% load static %}
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+    <span>ePrimaDonate</span>
+  </div>
+    <ul>
+    <li><a href="{% url 'chairman_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'chairman_donor_list' %}">View Donor List</a></li>
+    <li><a href="{% url 'approve_treasurer' %}">Approve Treasurer Actions</a></li>
+    <li><a href="{% url 'financial_reports' %}">Monthly Report</a></li>
+    <li><a href="{% url 'activity_logs' %}">View Activity Logs</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+
+  <div class="container">
+    <h1 class="dashboard-title">Chairman Dashboard</h1>
+    <p class="welcome-msg">Welcome, {{ request.user.username }}!</p>
+
+    <div class="dashboard-options">  
+      <a href="{% url 'chairman_donor_list' %}">View Donor List</a>
+      <a href="{% url 'approve_treasurer' %}">Approve Treasurer Actions</a>
+      <a href="{% url 'financial_reports' %}">Monthly Report</a>
+      <a href="{% url 'activity_logs' %}">View Activity Logs</a>  
+    </div>
+
+
+
+    <div class="logout-link">
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+
+</body>
+</html>

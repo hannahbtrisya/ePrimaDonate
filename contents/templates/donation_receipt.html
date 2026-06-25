@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <title>Donation Receipt</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #d35400;
+      margin-bottom: 25px;
+      font-size: 2.2em;
+    }
+
+    .details {
+      text-align: left;
+      font-size: 1.1em;
+      color: #555;
+    }
+
+    .details p {
+      margin: 12px 0;
+    }
+
+    .btn-group {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;        /* Wrap if screen is too small */
+  justify-content: center;
+  gap: 15px;              /* Nice spacing between buttons */
+}
+
+@media (max-width: 500px) {
+  .btn-group {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
+
+    .btn-group a {
+      background-color: #ff9f43;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-group a:hover {
+      background-color: #e67e22;
+    }
+
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+  <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+  <span>ePrimaDonate</span>
+</div>
+  <ul id="nav-links">
+    <li><a href="{% url 'index' %}">Home</a></li>
+    <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a><li>
+    <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+
+    {% if user.is_authenticated %}
+      <li><a href="#">Donation History</a></li> <!-- Placeholder -->
+      <li><a href="#">My Profile / Account Settings</a></li> <!-- Placeholder -->
+    {% endif %}
+
+    <li><a href="about">About Us</a></li> <!-- Placeholder -->
+  </ul>
+</nav>
+
+
+
+  <div class="container">
+    <h1>Thank You for Your Donation!</h1>
+    <div class="details">
+      <p><strong>Donation ID:</strong> {{ donation.id }}</p>
+      <p><strong>Donor:</strong> {{ donation.donor.donorName }}</p>
+      <p><strong>Donation Type:</strong> {{ donation.donation_type.name }}</p>
+      <p><strong>Amount:</strong> RM {{ donation.amount }}</p>
+      <p><strong>Status:</strong> {{ donation.status }}</p>
+      <p><strong>Payment Method:</strong> {{ donation.get_payment_method_display }}</p>
+    </div>
+
+    <div class="btn-group">
+      <a href="{% url 'download_receipt' donation.id %}">Download PDF Receipt</a>
+      <a href="{% url 'make_donation' %}">Make Another Donation</a>
+      <a href="{% url 'donor_dashboard' %}">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+</body>
+</html>

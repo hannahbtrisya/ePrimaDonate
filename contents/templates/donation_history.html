@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Donation History</title>
+  <style>
+    /* === CSS dari kamu (dah siap include) === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .donation-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .donation-card h3 {
+      color: #d35400;
+    }
+
+    .donation-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    footer {
+      background-color: #ff9f43;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+  <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img">
+  <span>ePrimaDonate</span>
+</div>
+    <ul id="nav-links">
+      <li><a href="{% url 'index' %}">Home</a></li>
+      <li><a href="{% url 'public_donation_type_list' %}">Type of Donation</a><li>
+      <li><a href="{% url 'make_donation' %}">Make a Donation</a></li>
+      {% if request.session.donor_id %}
+        <li><a href="{% url 'donation_history' %}">Donation History</a></li>
+        <li><a href="{% url 'donor_dashboard' %}">My Profile / Account Settings</a></li>
+      {% else %}
+        <li><a href="{% url 'login_register' %}">Login / Register</a></li>
+      {% endif %}
+      <li><a href="{% url 'about' %}">About Us</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+  <h1 class="section-title">Donation History</h1>
+
+  {% if donations %}
+    {% for donation in donations %}
+      <div class="donation-card">
+        <h3>{{ donation.donation_type.name }}</h3>
+        <p><strong>Amount:</strong> RM{{ donation.amount }}</p>
+        <p><strong>Payment Method:</strong> {{ donation.get_payment_method_display }}</p>
+        <p><strong>Date:</strong> {{ donation.date }}</p>
+        <p><strong>Status:</strong> {{ donation.status }}</p>
+
+        <div class="btn-group">
+          <a href="{% url 'download_receipt' donation.id %}" class="receipt-btn">Download Receipt</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="text-align:center;">You haven't made any donations yet.</p>
+  {% endif %}
+</div>
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+</body>
+</html>

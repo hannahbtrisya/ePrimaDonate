@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    /* Guna balik CSS kamu */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .donation-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .donation-card h3 {
+      color: #d35400;
+    }
+
+    .donation-card p {
+      margin: 5px 0;
+    }
+
+    .donation-card form {
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 7px 15px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn-approve {
+      background-color: #27ae60;
+      color: white;
+    }
+
+    .btn-reject {
+      background-color: #c0392b;
+      color: white;
+    }
+
+    footer {
+      background-color: #ff9f43;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Digital Donation - Admin</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+<a href="{% url 'admin_reports' %}">View Reports</a>
+
+
+      <li><a href="{% url 'logout_view' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1 class="section-title">Manage Donations</h1>
+
+    {% if donations %}
+      {% for donation in donations %}
+        <div class="donation-card">
+          <h3>{{ donation.donation_type }} - RM{{ donation.amount }}</h3>
+          <p><strong>Donor:</strong> {{ donation.donor.donorName }} ({{ donation.donor.emailAddress }})</p>
+          <p><strong>Payment Method:</strong> {{ donation.payment_method }}</p>
+          <p><strong>Status:</strong> {{ donation.status }}</p>
+          <p><strong>Date:</strong> {{ donation.date }}</p>
+          {% if donation.qr_receipt %}
+            <p><a href="{{ donation.qr_receipt.url }}" target="_blank">View QR Receipt</a></p>
+          {% endif %}
+
+          {% if donation.status == "Pending" %}
+            <form method="post" action="{% url 'approve_donation' donation.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn-approve" type="submit">Approve</button>
+            </form>
+            <form method="post" action="{% url 'reject_donation' donation.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn-reject" type="submit">Reject</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="text-align:center;">No donations yet.</p>
+    {% endif %}
+  </div>
+
+  <footer>
+    &copy; 2025 Digital Donation. Admin Panel.
+  </footer>
+
+</body>
+</html>

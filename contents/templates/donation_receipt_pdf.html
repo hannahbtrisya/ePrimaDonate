@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Donation Receipt PDF</title>
+  <style>
+    body {
+      font-family: 'Helvetica', sans-serif;
+      padding: 30px;
+      color: #333;
+    }
+    h1 {
+      color: #d35400;
+      text-align: center;
+    }
+    .details {
+      margin-top: 30px;
+    }
+    .details p {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Donation Receipt</h1>
+  <div class="details">
+    <p><strong>Donation ID:</strong> {{ donation.id }}</p>
+    <p><strong>Donor:</strong> {{ donation.donor.donorName }}</p>
+    <p><strong>Donation Type:</strong> {{ donation.donation_type.name }}</p>
+    <p><strong>Amount:</strong> RM {{ donation.amount }}</p>
+    <p><strong>Status:</strong> {{ donation.status }}</p>
+    <p><strong>Payment Method:</strong> {{ donation.get_payment_method_display }}</p>
+  </div>
+</body>
+</html>

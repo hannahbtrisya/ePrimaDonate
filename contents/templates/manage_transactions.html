@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Transactions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    nav {
+      background-color: #ff9f43;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2em;
+      color: #e67e22;
+      margin-bottom: 30px;
+    }
+
+    .filter {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filter select {
+      padding: 8px 12px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 800px;
+    }
+
+    thead {
+      background-color: #ffe0b2;
+    }
+
+    th, td {
+      padding: 15px 20px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    th {
+      color: #d35400;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    td {
+      font-size: 14px;
+      color: #555;
+    }
+
+    tr:hover {
+      background-color: #fff3e0;
+      transition: 0.2s ease;
+    }
+
+    td a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+
+    td a:hover {
+      text-decoration: underline;
+    }
+
+    .status-approved {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .status-rejected {
+      color: red;
+      font-weight: bold;
+    }
+
+    .message {
+      text-align: center;
+      margin: 15px 0;
+      font-weight: bold;
+      color: #999;
+    }
+
+    .approve-btn {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin: 2px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .reject-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin: 2px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .approve-btn:hover,
+    .reject-btn:hover {
+      opacity: 0.9;
+    }
+
+    @media screen and (max-width: 600px) {
+      h2 {
+        font-size: 1.5em;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+{% load static %}
+<body>
+  <nav>
+  <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo-img" style="height: 50px; width: auto;">
+    <span>ePrimaDonate</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'treasurer_dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'donation_type_list_treasurer' %}">Manage Donation Types</a></li>
+    <li><a href="{% url 'manage_transactions' %}">Manage Transactions</a></li>
+    <li><a href="{% url 'financial_reports' %}">Financial Reports</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+    <h2>All Donation Transactions</h2>
+
+    <div class="filter">
+      <form method="get">
+        <label for="status">Filter by Status:</label>
+        <select name="status" id="status" onchange="this.form.submit()">
+          <option value="">All</option>
+          <option value="Approved" {% if selected_status == 'Approved' %}selected{% endif %}>Approved</option>
+          <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+          <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+      </form>
+    </div>
+
+    {% if transactions %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Donor</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Proof</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for donation in transactions %}
+          <tr>
+            <td>{{ donation.donor.donorName }}</td>
+            <td>{{ donation.donation_type }}</td>
+            <td>RM {{ donation.amount }}</td>
+            <td>{{ donation.payment_method }}</td>
+            <td>{{ donation.date|date:"d M Y H:i" }}</td>
+            <td><span class="status-{{ donation.status|lower }}">{{ donation.status|title }}</span></td>
+            <td>
+              {% if donation.qr_receipt %}
+                <a href="{{ donation.qr_receipt.url }}" target="_blank">View</a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if donation.status == "Pending" %}
+                <form method="post" action="{% url 'update_transaction_status' donation.id %}" onsubmit="return confirm('Approve this transaction?');" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="Approved">
+                  <button type="submit" class="approve-btn">Approve</button>
+                </form>
+                <form method="post" action="{% url 'update_transaction_status' donation.id %}" onsubmit="return confirm('Reject this transaction?');" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="Rejected">
+                  <button type="submit" class="reject-btn">Reject</button>
+                </form>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="message">No transactions found.</p>
+    {% endif %}
+  </div>
+
+  <footer style="background-color: #333; color: #fff; padding: 25px 20px; text-align: center; font-size: 0.95em;">
+  <p>&copy; 2025 Masjid Prima Saujana Kajang Donation System</p>
+  <p>Developed for community service and charitable giving</p>
+  <p>Email: <a href="mailto:info@masjidprimasaujana.my" style="color: #ffa726;">info@masjidprimasaujana.my</a> |
+     Tel: 03-1234 5678</p>
+</footer>
+
+</body>
+</html>
